@@ -18,36 +18,41 @@ const AuthForm = () => {
     const enteredEmail = emailInputRef.current.value;
     const enteredPassword = passwordInputRef.current.value;
     setIsLoading(true);
+    let url;
     if (isLogin) {
+      url =
+        "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyDef3AFzc3JQQcKXgAwKJmsFGpMRYxuNuM";
     } else {
-      try {
-        const res = await fetch(
-          "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDef3AFzc3JQQcKXgAwKJmsFGpMRYxuNuM",
-          {
-            method: "POST",
-            body: JSON.stringify({
-              email: enteredEmail,
-              password: enteredPassword,
-              returnSecuredToken: true,
-            }),
-            headers: {
-              "content-type": "application/json",
-            },
-          }
-        );
-        setIsLoading(false);
-        if (res.ok) {
-        } else {
-          const data = await res.json();
-
-          // console.log(data);
-          let errorMessage = "Authentication Failed!";
-          if (data && data.error && data.error.message) {
-            errorMessage = data.error.message;
-          }
-          alert(errorMessage);
+      url =
+        "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDef3AFzc3JQQcKXgAwKJmsFGpMRYxuNuM";
+    }
+    try {
+      const res = await fetch(url, {
+        method: "POST",
+        body: JSON.stringify({
+          email: enteredEmail,
+          password: enteredPassword,
+          returnSecuredToken: true,
+        }),
+        headers: {
+          "content-type": "application/json",
+        },
+      });
+      setIsLoading(false);
+      if (res.ok) {
+        const data = await res.json();
+        console.log(data)
+        return data;
+      } else {
+        const data = await res.json();
+        console.log(data);
+        // let errorMessage = "Authentication Failed!";
+        if (data && data.error && data.error.message) {
+          throw new Error("Authentication failed!");
         }
-      } catch (error) {}
+      }
+    } catch (error) {
+      alert(error.message);
     }
   };
 
