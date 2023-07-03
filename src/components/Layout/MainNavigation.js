@@ -1,5 +1,6 @@
 import { useContext } from 'react';
 import { Link } from 'react-router-dom';
+import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import TokenContext from '../../store/token-context';
 
 import classes from './MainNavigation.module.css';
@@ -7,11 +8,13 @@ import classes from './MainNavigation.module.css';
 const MainNavigation = () => {
 
   const tokenCtx = useContext(TokenContext);
+  const history = useHistory();
 
   const isLoggedIn = tokenCtx.isLoggedIn;
 
   const logoutClickHandler = (event) => {
     tokenCtx.logout();
+    history.replace('/auth')
     console.log(tokenCtx.token)
   }
   return (
